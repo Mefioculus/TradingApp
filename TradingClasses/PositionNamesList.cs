@@ -26,7 +26,7 @@ namespace TradingClasses
             // Для начала пытаемся получить список данных, которые могли быть сохранены
             // в результате предыдущего запуска программы
             
-            PathToListInJson = Path.Combine(settings.DataDitectory, nameOfDirectory, nameOfFile);
+            PathToListInJson = Path.Combine(settings.DataDirectory, nameOfDirectory, nameOfFile);
             CheckPathToJsonFile();
             Load();
 
@@ -39,33 +39,29 @@ namespace TradingClasses
         #region Save and Load methods
 
         private void Load() {
-            List<string> result;
-            
-            if (File.Exits(this.PathToListInJson)) {
+
+            if (File.Exists(this.PathToListInJson)) {
                 string json = File.ReadAllText(this.PathToListInJson);
-                result = JsonConvert.DeserializeObject<List<string>>(json);
+                this.ListOfNames = JsonConvert.DeserializeObject<List<string>>(json);
             }
             else {
-                result = new List<string>();
+                this.ListOfNames = new List<string>();
             }
-
-            return result;
         }
 
         public void Save() {
-            //TODO
-            //Реализовать метод сохранения списка в json строку и после сохранения в файл
-            //Не производить сохранения, если переменная IsChanged - ложь
             if (this.IsChanged != false) {
-                string json = JsonConvert.SerializeObject(this.ListOfNames)
+                string json = JsonConvert.SerializeObject(this.ListOfNames);
+                File.WriteAllText(this.PathToListInJson, json);
             }
+
         }
 
         // Метод для проверки наличия пути к файлу, в котором будет сохранен список с данными
         private void CheckPathToJsonFile() {
-            if (this.PathToListInJson == string.Empty) {
+            if (this.PathToListInJson == string.Empty)
                 throw new Exception("File Path to json is missing");
-
+            else{
                 string pathToDirectoryWithJson = Path.GetDirectoryName(this.PathToListInJson);
                 if (!Directory.Exists(pathToDirectoryWithJson)) {
                     Directory.CreateDirectory(pathToDirectoryWithJson);
@@ -77,25 +73,28 @@ namespace TradingClasses
 
         #region Wrapper-methods for list<string> methods
 
-        public Add(string) {
-            //TODO
-            //Реализовать метод обертку для добавления новых объектво в справочник
-            //Так же реализовать изменение переменной IsChanged при наличии изменений
+        public bool Add(string value) {
+            if (!this.ListOfNames.Contains(value)) {
+                this.ListOfNames.Add(value);
+
+                return true;
+            }
+
+            return false;
         }
 
         public string this[int index] {
-            //TODO
-            //Реализовать метод обертку для обращения к листу с родительского класса
+            get {
+                return this.ListOfNames[index];
+            }
         }
 
         public int Count() {
-            //TODO
-            //Реализовать метод для определения количества объектов, которые содержатся в списке
+            return this.ListOfNames.Count;
         }
 
         public bool Contains(string value) {
-            //TODO
-            //Реализовать метод, который показывает, содержится ли уже в списке позиция с таким наименованием
+            return this.ListOfNames.Contains(value);
         }
 
         #endregion Wrapper-methods for list<string> methods

@@ -22,7 +22,7 @@ namespace TradingClasses
         public double CurrentCost { get; set; } = 0.0;
         public string Url { get; set; } = string.Empty;
         public string Currency { get; set; } = string.Empty;
-        public DateTime LastUpdate { get; set; } == new DateTime();
+        public DateTime LastUpdate { get; set; } = new DateTime();
 
         #endregion Properties and Fields
 
